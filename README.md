@@ -79,8 +79,44 @@ export async function updateUserState(prevState: any, formData: FormData) {
   await db.user.update({
     where: { id: session.user.id },
     data: validated.data,
+
   });
 
   revalidateTag(`user-${session.user.id}`);
   return { success: true };
 }
+Benchmark & Workflow Comparison
+Refactoring API Route to Type-Safe Server Action
+Prompt: "Convert app/api/user/update/route.ts to a Next.js 15 Server Action with optimistic updates."
+// Skill Auto-Activated: [server-actions-zod]
+'use server';
+
+import { z } from 'zod';
+import { revalidateTag } from 'next/cache';
+import { auth } from '@/lib/auth';
+
+const UpdateUserSchema = z.object({
+  displayName: z.string().min(2).max(50),
+});
+
+export async function updateUserState(prevState: any, formData: FormData) {
+  const session = await auth();
+  if (!session?.user) throw new Error('Unauthorized');
+
+  const validated = UpdateUserSchema.safeParse({
+    displayName: formData.get('displayName'),
+  });
+
+  if (!validated.success) {
+    return { errors: validated.error.flatten().fieldErrors };
+  }
+
+  await db.user.update({
+    where: { id: session.user.id },
+    data: validated.data,
+  });
+
+  revalidateTag(`user-${session.user.id}`);
+  return { success: true };
+}
+Performance MetricsTask Execution PatternWithout Skill PackWith nextjs15-claude-skillsAsync Params RefactoringHigh Hallucination (Uses Sync)100% Valid Next.js 15 SyntaxRSC Boundary SafetyLeaks Client Hooks to ServerStrict RSC/Client IsolationMutation ValidationMissing Zod / Manual ParsingAutomated Type-Safe SchemasCold-Start Latency SetupGeneric / Non-EdgeEdge-Optimized RulesetsContributingMaintained for the Next.js developer community. Pull requests for new skill rulesets or edge runtime extensions are welcome.
