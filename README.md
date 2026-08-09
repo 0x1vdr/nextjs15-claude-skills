@@ -48,3 +48,39 @@ Once linked, your AI client automatically injects strict static analysis rules f
 ## Quick Setup
 
 Install via CLI or drop the context pack into your workspace root:
+```bash
+npx vercel-skills@latest init --framework=nextjs15
+Or manually link to your global Claude environment:
+mkdir -p ~/.claude/skills
+cp -r .claude/skills/* ~/.claude/skills/
+// Skill Auto-Activated: [server-actions-zod]
+'use server';
+
+import { z } from 'zod';
+import { revalidateTag } from 'next/cache';
+import { auth } from '@/lib/auth';
+
+const UpdateUserSchema = z.object({
+  displayName: z.string().min(2).max(50),
+});
+
+export async function updateUserState(prevState: any, formData: FormData) {
+  const session = await auth();
+  if (!session?.user) throw new Error('Unauthorized');
+
+  const validated = UpdateUserSchema.safeParse({
+    displayName: formData.get('displayName'),
+  });
+
+  if (!validated.success) {
+    return { errors: validated.error.flatten().fieldErrors };
+  }
+
+  await db.user.update({
+    where: { id: session.user.id },
+    data: validated.data,
+  });
+
+  revalidateTag(`user-${session.user.id}`);
+  return { success: true };
+}
