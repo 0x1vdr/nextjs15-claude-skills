@@ -54,9 +54,16 @@ npx vercel-skills@latest init --framework=nextjs15
 mkdir -p ~/.claude/skills
 cp -r .claude/skills/* ~/.claude/skills/
 ```
-Benchmark & Workflow Comparison
-Refactoring API Route to Type-Safe Server Action
-Prompt: "Convert app/api/user/update/route.ts to a Next.js 15 Server Action with optimistic updates."
+zed RulesetsContributingMaintained for the Next.js developer community. Pull requests for new skill rulesets or edge runtime extensions are welcome.
+---
+
+## Benchmark & Workflow Comparison
+
+### Refactoring API Route to Type-Safe Server Action
+
+**Prompt:** *"Convert `app/api/user/update/route.ts` to a Next.js 15 Server Action with optimistic updates."*
+
+```typescript
 // Skill Auto-Activated: [server-actions-zod]
 'use server';
 
@@ -88,4 +95,20 @@ export async function updateUserState(prevState: any, formData: FormData) {
   revalidateTag(`user-${session.user.id}`);
   return { success: true };
 }
-Performance MetricsTask Execution PatternWithout Skill PackWith nextjs15-claude-skillsAsync Params RefactoringHigh Hallucination (Uses Sync)100% Valid Next.js 15 SyntaxRSC Boundary SafetyLeaks Client Hooks to ServerStrict RSC/Client IsolationMutation ValidationMissing Zod / Manual ParsingAutomated Type-Safe SchemasCold-Start Latency SetupGeneric / Non-EdgeEdge-Optimized RulesetsContributingMaintained for the Next.js developer community. Pull requests for new skill rulesets or edge runtime extensions are welcome.
+```
+---
+
+## Performance Metrics
+
+| Task Execution Pattern | Without Skill Pack | With `nextjs15-claude-skills` |
+| :--- | :--- | :--- |
+| **Async Params Refactoring** | High Hallucination | **100% Valid Next.js 15 Syntax** |
+| **RSC Boundary Safety** | Leaks Client Hooks | **Strict RSC/Client Isolation** |
+| **Mutation Validation** | Manual Parsing | **Automated Type-Safe Schemas** |
+| **Cold-Start Latency Setup** | Generic / Non-Edge | **Edge-Optimized Rulesets** |
+
+---
+
+## Contributing
+
+Maintained for the Next.js developer community. Pull requests for new skill rulesets or edge runtime extensions are welcome.
