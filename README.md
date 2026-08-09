@@ -35,56 +35,25 @@ Once linked, your AI client automatically injects strict static analysis rules f
 ---
 
 ## Skill Architecture
+
+```text
 .claude/
 └── skills/
-├── next15-async-params.json       # Rules for async dynamic APIs
-├── rsc-boundary-validator.json   # Enforces RSC vs Client Component boundaries
-├── server-actions-zod.json       # Type-safe mutations & state handling
-└── edge-cache-invalidation.json  # Granular tagging & staleTime policies
+    ├── next15-async-params.json       # Rules for async dynamic APIs
+    ├── rsc-boundary-validator.json   # Enforces RSC vs Client Component boundaries
+    ├── server-actions-zod.json       # Type-safe mutations & state handling
+    └── edge-cache-invalidation.json  # Granular tagging & staleTime policies
 
-
----
-
+```
 ## Quick Setup
 
 Install via CLI or drop the context pack into your workspace root:
+
 ```bash
 npx vercel-skills@latest init --framework=nextjs15
-Or manually link to your global Claude environment:
 mkdir -p ~/.claude/skills
 cp -r .claude/skills/* ~/.claude/skills/
-// Skill Auto-Activated: [server-actions-zod]
-'use server';
-
-import { z } from 'zod';
-import { revalidateTag } from 'next/cache';
-import { auth } from '@/lib/auth';
-
-const UpdateUserSchema = z.object({
-  displayName: z.string().min(2).max(50),
-});
-
-export async function updateUserState(prevState: any, formData: FormData) {
-  const session = await auth();
-  if (!session?.user) throw new Error('Unauthorized');
-
-  const validated = UpdateUserSchema.safeParse({
-    displayName: formData.get('displayName'),
-  });
-
-  if (!validated.success) {
-    return { errors: validated.error.flatten().fieldErrors };
-  }
-
-  await db.user.update({
-    where: { id: session.user.id },
-    data: validated.data,
-
-  });
-
-  revalidateTag(`user-${session.user.id}`);
-  return { success: true };
-}
+```
 Benchmark & Workflow Comparison
 Refactoring API Route to Type-Safe Server Action
 Prompt: "Convert app/api/user/update/route.ts to a Next.js 15 Server Action with optimistic updates."
