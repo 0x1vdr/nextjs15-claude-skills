@@ -1,16 +1,37 @@
 # nextjs15-claude-skills
 
-Official Claude AI skills and prompt packs engineered for Next.js 15, App Router, Parallel Routes, and Server Actions.
+> System-level instruction rulesets and `.claude/skills` context layer engineered for Next.js 15 (App Router), React 19, and Server Actions.
 
-Based on Vercel's core engineering conventions.
+[![Vercel Release](https://img.shields.io/badge/Vercel-v15.0.0-black?logo=vercel)](https://vercel.com)
+[![Claude Compatibility](https://img.shields.io/badge/Claude-3.5%20Sonnet%20%2F%20Opus-purple)](https://anthropic.com)
+[![React 19 Ready](https://img.shields.io/badge/React-19.0.0-61dafb?logo=react)](https://react.dev)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Features
+---
 
-- **App Router Native:** Enforces Next.js 15 directory structure and Server Components.
-- **Strict Server Actions:** Automatically refactors API mutations to type-safe Server Actions.
-- **Zero-Config Setup:** Drops directly into `.claude/skills/` or Cursor environment.
+## Overview
 
-## Quick Installation
+`nextjs15-claude-skills` provides zero-hallucination context protocols for Claude 3.5 Sonnet and Cursor. It forces LLMs to adhere strictly to Vercel's production standards, eliminating outdated Next.js 13/14 patterns (such as synchronous `cookies()`, legacy `pages/` routing, or improper RSC boundaries).
 
-```bash
-npx vercel-skills@latest add nextjs15
+Once linked, your AI client automatically injects strict static analysis rules for state management, edge caching, server-side mutations, and parallel routing.
+
+---
+
+## Architecture & Enforced Conventions
+
+### 1. Next.js 15 Async Request APIs
+- Enforces `await` on all dynamic request APIs (`cookies()`, `headers()`, `params`, and `searchParams`).
+- Automates migration from synchronous parameter access to dynamic Promise handling.
+
+### 2. React 19 & Server Action Rules
+- Strict separation of data fetching (RSC) and mutations (`'use server'`).
+- Native integration of `useActionState`, `useFormStatus`, and optimistic UI updates via `useOptimistic`.
+- Automatic input validation using `zod` schemas inside server boundary functions.
+
+### 3. Advanced Caching (`dynamicIO` & `staleTimes`)
+- Enforces explicit `unstable_cache` tagging and granular `revalidateTag()` strategies.
+- Eliminates silent cache bugs by enforcing default opt-in dynamic behavior where required.
+
+---
+
+## Skill Architecture
