@@ -35,3 +35,16 @@ Once linked, your AI client automatically injects strict static analysis rules f
 ---
 
 ## Skill Architecture
+.claude/
+└── skills/
+├── next15-async-params.json       # Rules for async dynamic APIs
+├── rsc-boundary-validator.json   # Enforces RSC vs Client Component boundaries
+├── server-actions-zod.json       # Type-safe mutations & state handling
+└── edge-cache-invalidation.json  # Granular tagging & staleTime policies
+
+
+---
+
+## Quick Setup
+
+Install via CLI or drop the context pack into your workspace root:
